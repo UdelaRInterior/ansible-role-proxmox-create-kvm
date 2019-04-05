@@ -1,0 +1,168 @@
+---
+# proxmox_create_kvm: creation of a complete virtual machine in porxmox cluster
+# tasks file for ansible-role-proxmox-create-kvm/
+
+# Extract hostname from inventory_hostname (must be fqdn)
+- name: Extraer el hostname del inventory_hostname que es el fqdn)
+  set_fact:
+    proxmox_hostname: "{{ inventory_hostname.split('.')[0] }}"
+
+# Verify that python-pip is installed in the proxmox node
+- name: Verificar si python-pip está instalado en el nodo proxmox
+  apt:
+    name: python-pip
+    state: present
+  delegate_to: "{{ api_host }}"
+
+# Verify if proxmoxer pip module is installed
+- name: Verificar si el módulo proxmoxer de python está instalado
+  pip:
+    name: proxmoxer
+    state: present
+  delegate_to: "{{ api_host }}"
+
+# Create KVM in proxmox node
+- name: Crear máquina virtual KVM en el nodo proxmox idóneo.
+  proxmox_kvm:
+    node: "{{ node }}"
+    name: "{{ proxmox_hostname }}"
+    api_user: "{{ api_user }}"
+    api_host: "{{ api_host }}"
+    api_password: "{{api_password}}"
+    cores: "{{ cores }}"
+    memory: "{{ memory }}"
+    virtio: '{"virtio0":"{{ storage }}:{{ disk }}"}'
+    net: '{"net0":"virtio,bridge={{ netif_bridge }},rate=200"}'
+    args:
+          -kernel /tmp/{{ os }}-{{ kernel | basename }}
+          -initrd /tmp/{{ os }}-{{ initrd | basename }}
+          -append "preseed/url={{ preseed }}
+          debian-installer/allow_unauthenticated_ssl=true
+          locale=es_UY.UTF-8
+          debian/priority=critical
+          vga=normal debian-installer/keymap=es
+          console-keymaps-at/keymap=es
+          console-setup/layoutcode=es_UY
+          netcfg/choose_interface=auto
+          localechooser/translation/warn-light=true
+          localechooser/translation/warn-severe=true
+          console-setup/ask_detect=false
+          netcfg/get_hostname={{ proxmox_hostname }}
+          {% if domainname is defined %}
+          netcfg/get_domain={{ domainname }}
+          {% else %}
+          netcfg/get_domain=localdomain
+          {% endif %}
+          {% if ( netif_ip4 is defined and netif_netmask is defined ) %}
+          netcfg/confirm_static=true
+          netcfg/disable_dhcp=true
+          netcfg/get_ipaddress={{netif_ip4}}
+          netcfg/get_netmask={{ netif_netmask }}
+          {% if netif_gw is defined %}
+          netcfg/get_gateway={{ netif_gw }}
+          {% endif %}
+          {% if nameserver is defined %}
+          netcfg/get_nameservers={{ nameserver }}
+          {% endif %}
+          {% endif %}
+
+          FRONTEND_BACKGROUND=original"
+
+#--ip={{ netif_ip4 }} --netmask={{ netif_netmask }}
+#--gateway={{ netif_gw }}
+#--nameserver={{ nameserver }}
+#--hostname={{ proxmox_hostname }}
+
+#	net:
+#            net0: "name={{ netif_name }},  {% if (netif_hwaddr is defined) %},hwaddr={{ netif_hwaddr }}{% endif %}{% if (netif_ip6 is defined) %},ip6={{ netif_ip6 }}/{{ netif_netmask6 }}{% endif %}{% if (netif_ip6 is defined) and (gw6 is defined) %},gw6={{ netif_gw6 }}{% endif %}"
+
+#ESTÁ FALTAN IPV6
+
+  register: virtualm
+  delegate_to: "{{ api_host }}"
+
+
+#        ostemplate: "local:vztmpl/{{ url_ostemplate | urlsplit('path') | basename }}"
+#        password: "{{ root_password }}"
+#        pubkey: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+
+#    when:  (mounts is not defined) or ( mounts|length == 0 )
+
+
+# Fectch deploy kernel
+- name: Descargar y deployar el Kernel
+  get_url:
+   url:  "{{ kernel }}"
+   dest: "/tmp/{{ os }}-{{ kernel | basename }}"
+  delegate_to: "{{ api_host }}"
+
+
+# Fectch deploy Initrd
+- name: Descargar y deplotar el initrd
+  get_url:
+   url:  "{{ initrd }}"
+   dest: "/tmp/{{ os }}-{{ initrd | basename }}"
+  delegate_to: "{{ api_host }}"
+
+
+# Start VM deployment
+- name: Iniciar la VM y proceder a su instalación
+  proxmox_kvm:
+   node: "{{ node }}"
+   name: "{{ proxmox_hostname }}"
+   api_user: "{{ api_user }}"
+   api_host: "{{ api_host }}"
+   api_password: "{{ api_password }}"
+   state: started
+  delegate_to: "{{ api_host }}"
+
+
+# Remove deploy args from vm
+#- name: remove deploy args from vm
+#  proxmox_kvm:
+#   api_user: "{{ api_user }}"
+#   api_password: "{{ api_password }}"
+#   api_host: "{{ api_host }}"
+#   node: "{{ item.item.value.node }}"
+#   name: "{{ item.item.key }}"
+#   delete: args
+
+
+# Show the ID of the VM
+- name: Mirá el número de la VM
+  debug:
+    var: virtualm
+
+
+# Extract the ID of the VM
+- name: Extraer el número de VM
+  shell: qm list | grep "{{ proxmox_hostname }}" | awk '{ print $1 }'
+  delegate_to: "{{ api_host }}"
+  register: VMID
+  when: virtualm is succeeded
+  tags:
+    - deploy
+
+- debug:
+    var: VMID
+  tags:
+    - deploy
+
+# Turn on the container
+#- name: Arrancar la virtual
+#  proxmox_kvm:
+#    node: "{{ node }}"
+#    api_user: "{{ api_user }}"
+#    api_host: "{{ api_host }}"
+#    api_password: "{{ api_password }}"
+#    vmid: "{{ VMID.stdout }}"
+#    state: started
+#  delegate_to: "{{ api_host }}"
+#  when: (container is not defined) or (container is succeeded)
+#  tags:
+#    - deploy
+
+# Waiting 15 seconds for the container to start
+#- pause:
+#    seconds: 15
+#    prompt: "Esperando 15 segundos para que el contenedor arranque"
