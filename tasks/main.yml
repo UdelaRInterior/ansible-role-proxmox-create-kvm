@@ -31,7 +31,7 @@
     api_password: "{{api_password}}"
     cores: "{{ cores }}"
     memory: "{{ memory }}"
-    virtio: '{"virtio0":"{{ storage }}:{{ disk }}{%if storage2 is defined %},{{ storage2 }}:{{ disk2 }}{% endif %}{%if storage3 is defined %},{{ storage3 }}:{{ disk3 }}{% endif %}"}'
+    virtio: "{'virtio0':'{{ storage }}:{{ disk }}'{%if storage1 is defined %},'virtio1':'{{ storage1 }}:{{ disk1 }}'{% endif %}{%if storage2 is defined %},'virtio2':'{{ storage2 }}:{{ disk2 }}'{% endif %}}"
     net: '{"net0":"virtio,bridge={{ netif_bridge }},rate=200"}'
     # args:
     #      -kernel /tmp/{{ os }}-{{ kernel | basename }}
