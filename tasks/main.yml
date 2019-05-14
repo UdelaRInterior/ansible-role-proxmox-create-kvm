@@ -32,7 +32,7 @@
     cores: "{{ cores }}"
     memory: "{{ memory }}"
     virtio: "{'virtio0':'{{ storage }}:{{ disk }}'{%if storage1 is defined %},'virtio1':'{{ storage1 }}:{{ disk1 }}'{% endif %}{%if storage2 is defined %},'virtio2':'{{ storage2 }}:{{ disk2 }}'{% endif %}}"
-    net: '{"net0":"virtio,bridge={{ netif_bridge }},rate=200"}'
+    net: '{"net0":"virtio,bridge={{ netif_bridge }},rate=200,{% if (netif_firewall is defined and netif_firewall) %}firewall=1{% endif %}"}'
     # args:
     #      -kernel /tmp/{{ os }}-{{ kernel | basename }}
     #      -initrd /tmp/{{ os }}-{{ initrd | basename }}
