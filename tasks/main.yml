@@ -140,6 +140,7 @@
   delegate_to: "{{ api_host }}"
   register: VMID
   when: virtualm is succeeded
+  changed_when: false
   tags:
     - deploy
 
