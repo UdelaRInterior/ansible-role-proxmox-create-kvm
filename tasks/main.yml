@@ -2,33 +2,33 @@
 # proxmox_create_kvm: creation of a complete virtual machine in porxmox cluster
 # tasks file for ansible-role-proxmox-create-kvm/
 
-# Extract hostname from inventory_hostname (must be fqdn)
-- name: Extraer el hostname del inventory_hostname que es el fqdn)
+# Extraer el hostname del inventory_hostname (debe ser el fqdn)
+- name: Extract hostname from inventory_hostname (must be fqdn)
   set_fact:
     proxmox_hostname: "{{ inventory_hostname.split('.')[0] }}"
 
-# Verify that python-pip is installed in the proxmox node
-- name: Verificar si python-pip está instalado en el nodo proxmox
+# Verificar si python-pip está instalado en el nodo proxmox
+- name: Verify that python-pip is installed in the Proxmox node
   apt:
     name: python-pip
     state: present
   delegate_to: "{{ api_host }}"
 
-# Verify if proxmoxer pip module is installed
-- name: Verificar si el módulo proxmoxer de python está instalado
+#  Verificar si el módulo proxmoxer de python está instalado
+- name: Verify if proxmoxer pip module is installed
   pip:
     name: proxmoxer
     state: present
   delegate_to: "{{ api_host }}"
 
-# Create KVM in proxmox node
-- name: Crear máquina virtual KVM en el nodo proxmox idóneo.
+# Crear máquina virtual KVM en el nodo Proxmox idóneo.
+- name: Create KVM in Proxmox node
   proxmox_kvm:
     node: "{{ node }}"
-    name: "{{ proxmox_hostname }}"
     api_user: "{{ api_user }}"
     api_host: "{{ api_host }}"
     api_password: "{{api_password}}"
+    name: "{{ proxmox_hostname }}"
     cores: "{{ cores }}"
     memory: "{{ memory }}"
     virtio: "{'virtio0':'{{ storage }}:{{ disk }}'{%if storage1 is defined %},'virtio1':'{{ storage1 }}:{{ disk1 }}'{% endif %}{%if storage2 is defined %},'virtio2':'{{ storage2 }}:{{ disk2 }}'{% endif %}}"
@@ -128,15 +128,18 @@
 #   delete: args
 
 
-# Show the ID of the VM
-- name: Mirá el número de la VM
+# Mirá el número de la VM
+- name: Show the ID of the VM
   debug:
     var: virtualm
 
-
-# Extract the ID of the VM
-- name: Extraer el número de VM
-  shell: qm list | grep "{{ proxmox_hostname }}" | awk '{ print $1 }'
+# Extraer el número de VM
+- name: Extract the ID of the VM
+  shell: |
+    set -o pipefail
+    qm list | grep -w "{{ proxmox_hostname }}" | awk '{ print $1 }'
+  args:
+    executable: /bin/bash
   delegate_to: "{{ api_host }}"
   register: VMID
   when: virtualm is succeeded
@@ -148,22 +151,3 @@
     var: VMID
   tags:
     - deploy
-
-# Turn on the container
-#- name: Arrancar la virtual
-#  proxmox_kvm:
-#    node: "{{ node }}"
-#    api_user: "{{ api_user }}"
-#    api_host: "{{ api_host }}"
-#    api_password: "{{ api_password }}"
-#    vmid: "{{ VMID.stdout }}"
-#    state: started
-#  delegate_to: "{{ api_host }}"
-#  when: (container is not defined) or (container is succeeded)
-#  tags:
-#    - deploy
-
-# Waiting 15 seconds for the container to start
-#- pause:
-#    seconds: 15
-#    prompt: "Esperando 15 segundos para que el contenedor arranque"
