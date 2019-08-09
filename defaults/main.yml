@@ -12,8 +12,26 @@ node_deploy_password: D3pl0y_pwd
 
 cores: 1
 memory: 512
-storage: local-lvm
-disk: 30
+
+hard_disks:
+  - id: 0                         #  0 ≤ n ≤ 15
+    bus: virtio                   # Optional. Available buses: virtio (default) - ide - sata - scsi
+    storage: local-lvm
+    size: 32
+    format: raw                   # Optional. Available formats: qcow2 - raw (default) - subvol
+    backup: true                  # Optional
+    skip_replication: false       # Optional
+    cache: none                   # Optional. Available types: none (default) - directsync - writethrough - writeback - unsafe
+    io_thread: false              # Optional
+    ssd_emulation: false          # Optional
+
+  - id: 1
+    bus: sata
+    storage: local-lvm
+    size: 16
+    ssd_emulation: true
+    backup: false
+
 
 net_interfaces:
   - id: net0

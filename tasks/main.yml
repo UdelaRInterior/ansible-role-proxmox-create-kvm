@@ -31,7 +31,10 @@
     name: "{{ proxmox_hostname }}"
     cores: "{{ cores }}"
     memory: "{{ memory }}"
-    virtio: "{'virtio0':'{{ storage }}:{{ disk }}'{%if storage1 is defined %},'virtio1':'{{ storage1 }}:{{ disk1 }}'{% endif %}{%if storage2 is defined %},'virtio2':'{{ storage2 }}:{{ disk2 }}'{% endif %}}"
+    virtio: >-
+      {   {%- for item in hard_disks -%}
+            "{{ item.bus }}{{ item.id }}":"{{ item.storage }}:{{ item.size }},{% if item.format is defined %}format={{ item.format }},{% endif %}{% if (item.backup is defined and not item.backup) %}backup=0,{% endif %}{% if (item.skip_replication is defined and item.skip_replication) %}replicate=0,{% endif %}{% if item.cache is defined %}cache={{ item.cache }},{% endif %}{% if (item.io_thread is defined and item.io_thread) %}iothread=1,{% endif %}{% if (item.ssd_emulation is defined and item.ssd_emulation) %}ssd=1{% endif %}",
+          {%- endfor -%}  }
     net: >-
       {   {%- for item in net_interfaces -%}
             "{{ item.id }}":"{% if item.model is defined %}{{ item.model }}{% else %}virtio{% endif %}{% if item.hwaddr is defined %}={{ item.hwaddr }}{% endif %},bridge={{ item.bridge }},{% if (item.firewall is defined and item.firewall) %}firewall=1,{% endif %}{% if (item.disconnect is defined and item.disconnect) %}link_down=1,{% endif %}{% if item.multiqueue is defined %}queues=1,{% endif %}{% if item.rate_limit is defined %}rate={{ item.rate_limit }},{% endif %}{% if item.vlan_tag is defined %}tag={{ item.vlan_tag }}{% endif %}",
