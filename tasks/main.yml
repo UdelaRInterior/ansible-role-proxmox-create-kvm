@@ -32,7 +32,11 @@
     cores: "{{ cores }}"
     memory: "{{ memory }}"
     virtio: "{'virtio0':'{{ storage }}:{{ disk }}'{%if storage1 is defined %},'virtio1':'{{ storage1 }}:{{ disk1 }}'{% endif %}{%if storage2 is defined %},'virtio2':'{{ storage2 }}:{{ disk2 }}'{% endif %}}"
-    net: '{"net0":"virtio,bridge={{ netif_bridge }},rate=200,{% if (netif_firewall is defined and netif_firewall) %}firewall=1{% endif %}"}'
+    net: >-
+      {   {%- for item in net_interfaces -%}
+            "{{ item.id }}":"{% if item.model is defined %}{{ item.model }}{% else %}virtio{% endif %}{% if item.hwaddr is defined %}={{ item.hwaddr }}{% endif %},bridge={{ item.bridge }},{% if (item.firewall is defined and item.firewall) %}firewall=1,{% endif %}{% if (item.disconnect is defined and item.disconnect) %}link_down=1,{% endif %}{% if item.multiqueue is defined %}queues=1,{% endif %}{% if item.rate_limit is defined %}rate={{ item.rate_limit }},{% endif %}{% if item.vlan_tag is defined %}tag={{ item.vlan_tag }}{% endif %}",
+          {%- endfor -%}  }
+
     # args:
     #      -kernel /tmp/{{ os }}-{{ kernel | basename }}
     #      -initrd /tmp/{{ os }}-{{ initrd | basename }}
