@@ -28,9 +28,18 @@
     api_user: "{{ api_user }}"
     api_host: "{{ api_host }}"
     api_password: "{{api_password}}"
+    description: "{{ description | default (omit) }}"
+    kvm: "{{ kvm | default (omit) }}"
+    ostype: "{{ ostype | default (omit) }}"
     name: "{{ proxmox_hostname }}"
-    cores: "{{ cores }}"
-    memory: "{{ memory }}"
+    sockets: "{{ sockets | default (omit) }}"
+    cores: "{{ cores | default (omit) }}"
+    cpuunits: "{{ cpuunits | default (omit) }}"
+    cpulimit: "{{ cpulimit | default (omit) }}"
+    memory: "{{ memory | default (omit) }}"
+    balloon: "{{ balloon | default (omit) }}"
+    shares: "{{ shares | default (omit) }}"
+    vga: "{{ vga | default (omit) }}"
     virtio: >-
       {   {%- for item in hard_disks -%}
             "{{ item.bus }}{{ item.id }}":"{{ item.storage }}:{{ item.size }},{% if item.format is defined %}format={{ item.format }},{% endif %}{% if (item.backup is defined and not item.backup) %}backup=0,{% endif %}{% if (item.skip_replication is defined and item.skip_replication) %}replicate=0,{% endif %}{% if item.cache is defined %}cache={{ item.cache }},{% endif %}{% if (item.io_thread is defined and item.io_thread) %}iothread=1,{% endif %}{% if (item.ssd_emulation is defined and item.ssd_emulation) %}ssd=1{% endif %}",

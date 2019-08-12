@@ -10,8 +10,19 @@ api_password: "pass1234"
 ## we have to find a way to define node_deploy_password as node[hostname]/deploy_password
 node_deploy_password: D3pl0y_pwd
 
+description: LAMP Server
+kvm: yes
+ostype: l26   # Choices: l24 - l26 (default) - other - wxp - w2k - w2k3 - w2k8 - wvista - win7 - win8 - solaris
+
+sockets: 1
 cores: 1
+cpuunits: 1000
+cpulimit: 0
 memory: 512
+balloon: 0
+shares: 0     # Amount of memory shares for auto-ballooning. (0 - 50000). Using 0 disables auto-ballooning, this means no limit.
+vga: std      # Select VGA type. If you want to use high resolution modes (>= 1280x1024x16) then you should use option 'std' or 'vmware'.
+              # Choices: std (default) - cirrus - vmware - qxl - serial0 - serial1 - serial2 - serial3 - qxl2 - qxl3 - qxl4
 
 hard_disks:
   - id: 0                         #  0 ≤ n ≤ 15
