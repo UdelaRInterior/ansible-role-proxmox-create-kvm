@@ -1,0 +1,17 @@
+---
+
+# Clonar máquina virtual KVM en el nodo Proxmox idóneo.
+- name: Clone KVM in Proxmox node
+  proxmox_kvm:
+    node: "{{ node }}"
+    api_user: "{{ api_user }}"
+    api_host: "{{ api_host }}"
+    api_password: "{{ api_password }}"
+    name: "{{ proxmox_hostname }}"
+    clone: "{{ clone_vm | default (omit) }}"            # The VM source
+    full: "{{ full_clone | default (omit) }}"
+    storage:  "{{ clone_storage | default (omit) }}"    # Target storage for full clone.
+    format: "{{ clone_format | default (omit) }}"       # Target drive's backing file's data format. Used only with clone
+    timeout: 500                                        # The task can take a while
+  register: virtualm
+  delegate_to: "{{ api_host }}"
