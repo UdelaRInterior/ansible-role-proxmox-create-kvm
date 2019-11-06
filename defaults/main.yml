@@ -11,7 +11,7 @@ api_password: "pass1234"
 node_deploy_password: D3pl0y_pwd
 
 clone_from_existing: false                  # FALSE: create a new VM  -  TRUE: clone an existing VM
-full_clone: false                           # FALSE: linked clone  -  TRUE: full clone 
+full_clone: true                            # FALSE: linked clone  -  TRUE: full clone 
 clone_vm: DebianBusterTemplate              # The VM to clone
 clone_storage: local-lvm                    # Target storage for full clone.
 clone_format: raw                           # Target drive's backing file's data format. Used only with clone
