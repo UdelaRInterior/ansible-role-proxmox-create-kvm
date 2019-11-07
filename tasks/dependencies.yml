@@ -1,0 +1,20 @@
+---
+
+# Extraer el hostname del inventory_hostname (debe ser el fqdn)
+- name: Extract hostname from inventory_hostname (must be fqdn)
+  set_fact:
+    proxmox_hostname: "{{ inventory_hostname.split('.')[0] }}"
+
+# Verificar si python-pip está instalado en el nodo proxmox
+- name: Verify that python-pip is installed in the Proxmox node
+  apt:
+    name: python-pip
+    state: present
+  delegate_to: "{{ api_host }}"
+
+#  Verificar si el módulo proxmoxer de python está instalado
+- name: Verify if proxmoxer pip module is installed
+  pip:
+    name: proxmoxer
+    state: present
+  delegate_to: "{{ api_host }}"

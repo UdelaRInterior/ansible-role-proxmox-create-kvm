@@ -1,20 +1,21 @@
 ---
 # defaults file for ansible-role-proxmox-create-kvm/
-# typical variables to define for a virtual machine (in host_vars/inventory_hostname, for ex)
+# typical variables to define for a virtual machine (in host_vars/inventory_hostname, for ex.)
 
 node: my_node
 api_host: my_node.my_cluster.org
 api_user: deploy@pam
-api_password: "pass1234"
-## better put this in a vautl, ex host_vars/inventory_hostname/vault/main.yml
-## we have to find a way to define node_deploy_password as node[hostname]/deploy_password
+api_password: "pass1234" ## Better put passwords in a vault, ex. [group_vars | host_vars]/{{ inventory_hostname }}/vault/main.yml
 node_deploy_password: D3pl0y_pwd
 
-clone_from_existing: false                  # FALSE: create a new VM  -  TRUE: clone an existing VM
-full_clone: true                            # FALSE: linked clone  -  TRUE: full clone 
-clone_vm: DebianBusterTemplate              # The VM to clone
-clone_storage: local-lvm                    # Target storage for full clone.
-clone_format: raw                           # Target drive's backing file's data format. Used only with clone
+# If the VM is cloned, the other parameters are not used, the assigned hardware characteristics are inherited from the cloned VM
+clone_from_existing: false        # FALSE: create a new VM  -  TRUE: clone an existing VM
+full_clone: true                  # FALSE: linked clone  -  TRUE: full clone ## See https://github.com/UdelaRInterior/ansible-role-proxmox-create-kvm/issues/2
+clone_vm: DebianBusterTemplate    # The VM to clone
+clone_storage: local-lvm          # Target storage for full clone.
+clone_format: raw                 # Target drive's backing file's data format. Used only with clone
+                                  # Choices: cloop - cow - qcow - qcow2 (default) - qed - raw - vmdk
+
 
 description: LAMP Server
 kvm: yes
