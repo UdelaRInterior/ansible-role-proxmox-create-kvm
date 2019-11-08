@@ -17,8 +17,8 @@ galaxy_info:
 
   galaxy_tags:
     - system
-    - virtual machines
     - virtual
+    - machines
     - kvm
     - pve
     - proxmox

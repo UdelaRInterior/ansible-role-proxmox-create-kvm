@@ -6,7 +6,7 @@
     node: "{{ node }}"
     api_user: "{{ api_user }}"
     api_host: "{{ api_host }}"
-    api_password: "{{api_password}}"
+    api_password: "{{ api_password }}"
     description: "{{ description | default (omit) }}"
     kvm: "{{ kvm | default (omit) }}"
     ostype: "{{ ostype | default (omit) }}"
