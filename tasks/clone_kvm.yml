@@ -15,5 +15,6 @@
     timeout: 500                                        # Cloning can take a while
     target: "{{ clone_target }}"                        # Target node 
     vmid: "{{ clone_vmid | default (omit) }}"           # VM source id
+    newid: "{{ clone_newid | default (omit) }}"         # Clone id
   register: virtualm
   delegate_to: "{{ api_host }}"
