@@ -49,6 +49,10 @@ clone_vm: DebianBusterTemplate    # The VM to clone
 clone_storage: local-lvm          # Target storage for full clone.
 clone_format: raw                 # Target drive's backing file's data format. Used only with clone
                                   # Choices: cloop - cow - qcow - qcow2 (default) - qed - raw - vmdk
+clone_target: "{{ node }}"        # Target node 
+# clone_vmid: 1                   # VM source id
+# clone_newid: 9                  # Clone id
+                                  # Choices: cloop - cow - qcow - qcow2 (default) - qed - raw - vmdk
 
 description: LAMP Server
 kvm: yes
