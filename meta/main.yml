@@ -1,5 +1,5 @@
 galaxy_info:
-  role_name: proxmox_create_kmv
+  role_name: proxmox_create_kvm
   author:
     - 'Daniel Viñar (@ulvida)'
     - 'Santiago Martínez (@santiagomr)'
