@@ -10,11 +10,6 @@
 - include_tasks: clone_kvm.yml
   when: clone_from_existing | bool
 
-# Mirá el número de la VM
-- name: Show the ID of the VM
-  debug:
-    var: virtualm
-
 # Extraer el número de VM
 - name: Extract the ID of the VM
   shell: |
@@ -26,5 +21,15 @@
   register: VMID
   when: virtualm is succeeded
   changed_when: false
-  tags:
-    - deploy
+
+# Encender la VM
+- name: Turn on the VM
+  proxmox_kvm:
+    node: "{{ node }}"
+    api_user: "{{ api_user }}"
+    api_host: "{{ api_host }}"
+    api_password: "{{ api_password }}"
+    vmid: "{{ VMID.stdout }}"
+    state: started
+  delegate_to: "{{ api_host }}"
+  when: start_after_create | bool

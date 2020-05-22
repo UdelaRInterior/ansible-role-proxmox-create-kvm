@@ -42,6 +42,8 @@ api_user: deploy@pam
 api_password: "pass1234" ## Better put passwords in a vault, ex. [group_vars | host_vars]/{{ inventory_hostname }}/vault/main.yml
 node_deploy_password: D3pl0y_pwd
 
+start_after_create: false # Turn on the VM once created. Whether created from scratch or cloned
+
 # If the VM is cloned, the other parameters are not used, the assigned hardware characteristics are inherited from the cloned VM
 clone_from_existing: false        # FALSE: create a new VM  -  TRUE: clone an existing VM
 full_clone: true                  # FALSE: linked clone  -  TRUE: full clone ## See https://github.com/UdelaRInterior/ansible-role-proxmox-create-kvm/issues/2
@@ -49,7 +51,7 @@ clone_vm: DebianBusterTemplate    # The VM to clone
 clone_storage: local-lvm          # Target storage for full clone.
 clone_format: raw                 # Target drive's backing file's data format. Used only with clone
                                   # Choices: cloop - cow - qcow - qcow2 (default) - qed - raw - vmdk
-clone_target: "{{ node }}"        # Target node 
+clone_target: "{{ node }}"        # Target node
 # clone_vmid: 1                   # VM source id
 # clone_newid: 9                  # Clone id
                                   # Choices: cloop - cow - qcow - qcow2 (default) - qed - raw - vmdk
