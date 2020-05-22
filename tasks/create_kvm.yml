@@ -1,7 +1,7 @@
 ---
 
-# Crear máquina virtual KVM en el nodo Proxmox idóneo.
-- name: Create KVM in Proxmox node
+# Crear una KVM desde cero en el nodo Proxmox
+- name: Create a KVM from scratch in Proxmox node
   proxmox_kvm:
     node: "{{ node }}"
     api_user: "{{ api_user }}"
