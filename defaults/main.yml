@@ -21,6 +21,31 @@ clone_target: "{{ node }}"        # Target node
 # clone_newid: 9                  # Clone id
                                   # Choices: cloop - cow - qcow - qcow2 (default) - qed - raw - vmdk
 
+clone_cloud_init_snippet: |
+  hostname: myserver
+  manage_etc_hosts: true
+  fqdn: myserver.mydomain.com
+  user: deploy
+  password: $5$WxmxyYwx$LjRDOypM3sF7Ee3yDkK6sboa4mxkTSS1.q.b8pWhWm7
+  ssh_authorized_keys:
+    - ssh-rsa ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC31cWNsJUSYeS2hPtrj2P5/QUCXCqbFXKeT3WWROvfH/Kwr+Z/9Ap19Dkh3bLsZZLuu6yOWwbruwsWu+Cb4UkFnTWnFh0FQysvBk6yS6fnNsYXQJEDvb0zOwmZp6peurAYCdAM63SK4TuHUeXwEJPuiSilhneA4gBTDqeLHydu1BFAkJlhO9XUWvG53ZtC1myQbjaesQyQEyyfKlrdd4Bci6eXU7IFPKAgJtjhqTYLcJBM+pEVEUrAC/AgncXfpizg2SuU3b4rGbENLLFnQmSs1r5+KrrXPuJ3XSltVUgU4kbxoWEtHWKZnJSqs0J8jOabMX9+Dv6Dnp95Xb4tLsIflwIHWgBNuaBApsP1ar3pnxqLM2TsGR0au97birTeQ2K2PQ38vDWwOWJ+uZoV3nGHP6Eh7beNlEYhdtfXuq95H2Hg6Arx63YR8Ta1ZyY0WRvwNFmbAREdzgUvO+ehjUsaIFgmFMGIywtL+vjBj8hi5Qw6azu1kXoVZCGAqb7NdIU= name@host
+  chpasswd:
+    expire: False
+  users:
+    - default
+  package_upgrade: false
+  network:
+    version: 1
+    config:
+        - type: physical
+          name: eth0
+          mac_address: '42:0c:2a:10:75:e2'
+          subnets:
+          - type: static
+            address: '192.168.0.200'
+            netmask: '255.255.255.0'
+            gateway: '192.168.0.1'
+
 
 description: LAMP Server
 kvm: yes
