@@ -12,7 +12,7 @@
     full: "{{ full_clone | default (omit) }}"
     storage:  "{{ clone_storage | default (omit) }}"    # Target storage for full clone.
     format: "{{ clone_format | default (omit) }}"       # Target drive's backing file's data format. Used only with clone
-    timeout: 500                                        # Cloning can take a while
+    timeout: "{{ clone_timeout }}"                      # Cloning can take a while
     target: "{{ clone_target }}"                        # Target node
     vmid: "{{ clone_vmid | default (omit) }}"           # VM source id
     newid: "{{ clone_newid | default (omit) }}"         # Clone id
