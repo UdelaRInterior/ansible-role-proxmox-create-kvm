@@ -16,6 +16,7 @@
     cpuunits: "{{ cpuunits | default (omit) }}"
     cpulimit: "{{ cpulimit | default (omit) }}"
     memory: "{{ memory | default (omit) }}"
+    timeout: "{{ pve_timeout }}"
     balloon: "{{ balloon | default (omit) }}"
     shares: "{{ shares | default (omit) }}"
     vga: "{{ vga | default (omit) }}"
