@@ -9,7 +9,7 @@ api_password: "pass1234" ## Better put passwords in a vault, ex. [group_vars | h
 node_deploy_password: D3pl0y_pwd
 
 start_after_create: false # Turn on the VM once created. Whether created from scratch or cloned
-pve_timeout: 500 # Timeout for operations, both clone and create
+pve_timeout: 500 # Timeout (in seconds) for operations, both clone and create
 
 # If the VM is cloned, the other parameters are not used, the assigned hardware characteristics are inherited from the cloned VM
 clone_from_existing: false        # FALSE: create a new VM  -  TRUE: clone an existing VM

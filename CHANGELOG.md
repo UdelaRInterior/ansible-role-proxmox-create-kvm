@@ -1,5 +1,9 @@
 # Change Log
 
+## [v1.2.0](https://github.com/UdelaRInterior/ansible-role-proxmox-create-kvm/tree/v1.2.0)
+
+* Added variable to parameterize proxmox_kvm module timeout
+
 ## [v1.1.0](https://github.com/UdelaRInterior/ansible-role-proxmox-create-kvm/tree/v1.1.0)
 
 * Added the possibility to turn on the VM after create it
