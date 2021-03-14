@@ -17,3 +17,5 @@
     name: proxmoxer
     state: present
   delegate_to: "{{ api_host }}"
+
+...

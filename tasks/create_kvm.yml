@@ -31,3 +31,5 @@
 
   register: pve_kvm_virtualm
   delegate_to: "{{ pve_kvm_api_host }}"
+
+...

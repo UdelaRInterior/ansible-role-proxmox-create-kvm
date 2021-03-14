@@ -16,7 +16,7 @@ pve_kvm_timeout: "{{ pve_timeout if pve_timeout is defined else '500' }}" # Time
 
 # If the VM is cloned, the other parameters are not used, the assigned hardware characteristics are inherited from the cloned VM
 pve_kvm_clone_from_existing: "{{ clone_from_existing if clone_from_existing is defined else 'false' }}"        # FALSE: create a new VM  -  TRUE: clone an existing VM
-pve_kvm_full_clone: "{{ full_clone if full_clone is defined else true'' }}"                  # FALSE: linked clone  -  TRUE: full clone ## See https://github.com/UdelaRInterior/ansible-role-proxmox-create-kvm/issues/2
+pve_kvm_full_clone: "{{ full_clone if full_clone is defined else 'true' }}"                  # FALSE: linked clone  -  TRUE: full clone ## See https://github.com/UdelaRInterior/ansible-role-proxmox-create-kvm/issues/2
 pve_kvm_clone_vm: "{{ clone_vm if clone_vm is defined else 'DebianBusterTemplate' }}"    # The VM to clone
 pve_kvm_clone_storage: "{{ clone_storage if clone_storage is defined else 'local-lvm' }}"          # Target storage for full clone.
 pve_kvm_clone_format: "{{ clone_format if clone_format is defined else 'raw' }}"                 # Target drive's backing file's data format. Used only with clone
