@@ -2,42 +2,46 @@
 # defaults file for ansible-role-proxmox-create-kvm/
 # typical variables to define for a virtual machine (in host_vars/inventory_hostname, for ex.)
 
-node: my_node
-api_host: my_node.my_cluster.org
-api_user: deploy@pam
-api_password: "pass1234" ## Better put passwords in a vault, ex. [group_vars | host_vars]/{{ inventory_hostname }}/vault/main.yml
-node_deploy_password: D3pl0y_pwd
+# Proxmox hostname of the kvm to be created. By default, inventory_hostname is the FQDN or hostname, we set the hostname.
+pve_kvm_hostname: "{{ inventory_hostname.split('.')[0] }}"
 
-start_after_create: false # Turn on the VM once created. Whether created from scratch or cloned
-pve_timeout: 500 # Timeout (in seconds) for operations, both clone and create
+pve_kvm_node: "{{ node if node is defined else 'my_node' }}"
+pve_kvm_api_host: "{{ api_host if api_host is defined else 'my_node.my_cluster.org' }}"
+pve_kvm_api_user: "{{ api_user if api_user is defined else 'deploy@pam' }}"
+pve_kvm_api_password: "{{ api_password if api_password is defined else 'pass1234' }}" ## Better put passwords in a vault, ex. [group_vars | host_vars]/{{ inventory_hostname }}/vault/main.yml
+pve_kvm_node_deploy_password: "{{ node_deploy_password if node_deploy_password is defined else 'D3pl0y_pwd' }}"
+
+pve_kvm_start_after_create: "{{ start_after_create if start_after_create is defined else 'false' }}" # Turn on the VM once created. Whether created from scratch or cloned
+pve_kvm_timeout: "{{ pve_timeout if pve_timeout is defined else '500' }}" # Timeout (in seconds) for operations, both clone and create
 
 # If the VM is cloned, the other parameters are not used, the assigned hardware characteristics are inherited from the cloned VM
-clone_from_existing: false        # FALSE: create a new VM  -  TRUE: clone an existing VM
-full_clone: true                  # FALSE: linked clone  -  TRUE: full clone ## See https://github.com/UdelaRInterior/ansible-role-proxmox-create-kvm/issues/2
-clone_vm: DebianBusterTemplate    # The VM to clone
-clone_storage: local-lvm          # Target storage for full clone.
-clone_format: raw                 # Target drive's backing file's data format. Used only with clone
-clone_target: "{{ node }}"        # Target node
+pve_kvm_clone_from_existing: "{{ clone_from_existing if clone_from_existing is defined else 'false' }}"        # FALSE: create a new VM  -  TRUE: clone an existing VM
+pve_kvm_full_clone: "{{ full_clone if full_clone is defined else true'' }}"                  # FALSE: linked clone  -  TRUE: full clone ## See https://github.com/UdelaRInterior/ansible-role-proxmox-create-kvm/issues/2
+pve_kvm_clone_vm: "{{ clone_vm if clone_vm is defined else 'DebianBusterTemplate' }}"    # The VM to clone
+pve_kvm_clone_storage: "{{ clone_storage if clone_storage is defined else 'local-lvm' }}"          # Target storage for full clone.
+pve_kvm_clone_format: "{{ clone_format if clone_format is defined else 'raw' }}"                 # Target drive's backing file's data format. Used only with clone
+pve_kvm_clone_target: "{{ pve_kvm_node }}"        # Target node
 # clone_vmid: 1                   # VM source id
 # clone_newid: 9                  # Clone id
                                   # Choices: cloop - cow - qcow - qcow2 (default) - qed - raw - vmdk
 
 
-description: LAMP Server
-kvm: yes
-ostype: l26   # Choices: l24 - l26 (default) - other - wxp - w2k - w2k3 - w2k8 - wvista - win7 - win8 - solaris
+pve_kvm_description: "{{ description if description is defined else 'LAMP Server' }}"
+pve_kvm_kvm: "{{ kvm if kvm is defined else 'yes' }}"
+pve_kvm_ostype: "{{ ostype if ostype is defined else 'l26' }}"   # Choices: l24 - l26 (default) - other - wxp - w2k - w2k3 - w2k8 - wvista - win7 - win8 - solaris
 
-sockets: 1
-cores: 1
-cpuunits: 1000
-cpulimit: 0
-memory: 512
-balloon: 0
-shares: 0     # Amount of memory shares for auto-ballooning. (0 - 50000). Using 0 disables auto-ballooning, this means no limit.
-vga: std      # Select VGA type. If you want to use high resolution modes (>= 1280x1024x16) then you should use option 'std' or 'vmware'.
+pve_kvm_sockets: "{{ sockets if sockets is defined else '1' }}"
+pve_kvm_cores: "{{ cores if cores is defined else '1' }}"
+pve_kvm_cpuunits: "{{ cpuunits if cpuunits is defined else '1000' }}"
+pve_kvm_cpulimit: "{{ cpulimit if cpulimit is defined else '0' }}"
+pve_kvm_memory: "{{ memory if memory is defined else '512' }}"
+pve_kvm_balloon: "{{ balloon if balloon is defined else '0' }}"
+pve_kvm_shares: "{{ shares if shares is defined else '0' }}"     # Amount of memory shares for auto-ballooning. (0 - 50000). Using 0 disables auto-ballooning, this means no limit.
+pve_kvm_vga: "{{ vga if vga is defined else 'std' }}"      # Select VGA type. If you want to use high resolution modes (>= 1280x1024x16) then you should use option 'std' or 'vmware'.
               # Choices: std (default) - cirrus - vmware - qxl - serial0 - serial1 - serial2 - serial3 - qxl2 - qxl3 - qxl4
 
-hard_disks:
+pve_kvm_hard_disks: "{{ hard_disks if hard_disks is defined else pve_kvm_hard_disks_default }}"
+pve_kvm_hard_disks_default:
   - id: 0                         #  0 ≤ n ≤ 15
     bus: virtio                   # Optional. Available buses: virtio (default) - ide - sata - scsi
     storage: local-lvm
@@ -56,8 +60,8 @@ hard_disks:
     ssd_emulation: true
     backup: false
 
-
-net_interfaces:
+pve_kvm_net_interfaces: "{{ net_interfaces if net_interfaces is defined else pve_kvm_net_interfaces_default }}"
+pve_kvm_net_interfaces_default:
   - id: net0
     model: virtio                 # Optional. Available models: virtio - e1000 - rtl8139 - vmxnet3
     hwaddr: 46:70:B7:26:87:4F     # Optional. If not indicated, Proxmox will assign one automatically.
@@ -70,3 +74,5 @@ net_interfaces:
 
   - id: net1
     bridge: vmbr0
+
+...

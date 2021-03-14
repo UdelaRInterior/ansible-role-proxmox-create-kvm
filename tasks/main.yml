@@ -14,22 +14,22 @@
 - name: Extract the ID of the VM
   shell: |
     set -o pipefail
-    qm list | grep -w "{{ proxmox_hostname }}" | awk '{ print $1 }'
+    qm list | grep -w "{{ pve_kvm_hostname }}" | awk '{ print $1 }'
   args:
     executable: /bin/bash
-  delegate_to: "{{ api_host }}"
+  delegate_to: "{{ pve_kvm_api_host }}"
   register: VMID
-  when: virtualm is succeeded
+  when: pve_kvm_virtualm is succeeded
   changed_when: false
 
 # Encender la VM
 - name: Turn on the VM
   proxmox_kvm:
-    node: "{{ node }}"
-    api_user: "{{ api_user }}"
-    api_host: "{{ api_host }}"
-    api_password: "{{ api_password }}"
-    vmid: "{{ VMID.stdout }}"
+    node: "{{ pve_kvm_node }}"
+    api_user: "{{ pve_kvm_api_user }}"
+    api_host: "{{ pve_kvm_api_host }}"
+    api_password: "{{ pve_kvm_api_password }}"
+    vmid: "{{ pve_kvm_VMID.stdout }}"
     state: started
-  delegate_to: "{{ api_host }}"
-  when: start_after_create | bool
+  delegate_to: "{{ pve_kvm_api_host }}"
+  when: pve_kvm_start_after_create | bool

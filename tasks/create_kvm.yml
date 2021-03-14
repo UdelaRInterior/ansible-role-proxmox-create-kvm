@@ -3,31 +3,31 @@
 # Crear una KVM desde cero en el nodo Proxmox
 - name: Create a KVM from scratch in Proxmox node
   proxmox_kvm:
-    node: "{{ node }}"
-    api_user: "{{ api_user }}"
-    api_host: "{{ api_host }}"
-    api_password: "{{ api_password }}"
-    description: "{{ description | default (omit) }}"
-    kvm: "{{ kvm | default (omit) }}"
-    ostype: "{{ ostype | default (omit) }}"
-    name: "{{ proxmox_hostname }}"
-    sockets: "{{ sockets | default (omit) }}"
-    cores: "{{ cores | default (omit) }}"
-    cpuunits: "{{ cpuunits | default (omit) }}"
-    cpulimit: "{{ cpulimit | default (omit) }}"
-    memory: "{{ memory | default (omit) }}"
-    timeout: "{{ pve_timeout }}"
-    balloon: "{{ balloon | default (omit) }}"
-    shares: "{{ shares | default (omit) }}"
-    vga: "{{ vga | default (omit) }}"
+    node: "{{ pve_kvm_node }}"
+    api_user: "{{ pve_kvm_api_user }}"
+    api_host: "{{ pve_kvm_api_host }}"
+    api_password: "{{ pve_kvm_api_password }}"
+    description: "{{ pve_kvm_description | default (omit) }}"
+    kvm: "{{ pve_kvm_kvm | default (omit) }}"
+    ostype: "{{ pve_kvm_ostype | default (omit) }}"
+    name: "{{ pve_kvm_hostname }}"
+    sockets: "{{ pve_kvm_sockets | default (omit) }}"
+    cores: "{{ pve_kvm_cores | default (omit) }}"
+    cpuunits: "{{ pve_kvm_cpuunits | default (omit) }}"
+    cpulimit: "{{ pve_kvm_cpulimit | default (omit) }}"
+    memory: "{{ pve_kvm_memory | default (omit) }}"
+    timeout: "{{ pve_kvm_timeout }}"
+    balloon: "{{ pve_kvm_balloon | default (omit) }}"
+    shares: "{{ pve_kvm_shares | default (omit) }}"
+    vga: "{{ pve_kvm_vga | default (omit) }}"
     virtio: >-
-      {   {%- for item in hard_disks -%}
+      {   {%- for item in pve_kvm_hard_disks -%}
             "{{ item.bus }}{{ item.id }}":"{{ item.storage }}:{{ item.size }},{% if item.format is defined %}format={{ item.format }},{% endif %}{% if (item.backup is defined and not item.backup) %}backup=0,{% endif %}{% if (item.skip_replication is defined and item.skip_replication) %}replicate=0,{% endif %}{% if item.cache is defined %}cache={{ item.cache }},{% endif %}{% if (item.io_thread is defined and item.io_thread) %}iothread=1,{% endif %}{% if (item.ssd_emulation is defined and item.ssd_emulation) %}ssd=1{% endif %}",
           {%- endfor -%}  }
     net: >-
-      {   {%- for item in net_interfaces -%}
+      {   {%- for item in pve_kvm_net_interfaces -%}
             "{{ item.id }}":"{% if item.model is defined %}{{ item.model }}{% else %}virtio{% endif %}{% if item.hwaddr is defined %}={{ item.hwaddr }}{% endif %},bridge={{ item.bridge }},{% if (item.firewall is defined and item.firewall) %}firewall=1,{% endif %}{% if (item.disconnect is defined and item.disconnect) %}link_down=1,{% endif %}{% if item.multiqueue is defined %}queues=1,{% endif %}{% if item.rate_limit is defined %}rate={{ item.rate_limit }},{% endif %}{% if item.vlan_tag is defined %}tag={{ item.vlan_tag }}{% endif %}",
           {%- endfor -%}  }
 
-  register: virtualm
-  delegate_to: "{{ api_host }}"
+  register: pve_kvm_virtualm
+  delegate_to: "{{ pve_kvm_api_host }}"

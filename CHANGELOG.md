@@ -1,5 +1,10 @@
 # Change Log
 
+## [v2.0.0](https://github.com/UdelaRInterior/ansible-role-proxmox-create-kvm/tree/v2.0.0)
+
+* New role's variables interface, with a uniform namespace pve_kvm_*
+* Now possible to define the proxmox hostname as a variable, `pve_kvm_hostname`
+
 ## [v1.2.0](https://github.com/UdelaRInterior/ansible-role-proxmox-create-kvm/tree/v1.2.0)
 
 * Added variable to parameterize proxmox_kvm module timeout
