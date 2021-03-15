@@ -18,7 +18,7 @@
   args:
     executable: /bin/bash
   delegate_to: "{{ pve_kvm_api_host }}"
-  register: VMID
+  register: pve_kvm_VMID
   when: pve_kvm_virtualm is succeeded
   changed_when: false
 

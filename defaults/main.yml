@@ -21,8 +21,8 @@ pve_kvm_clone_vm: "{{ clone_vm if clone_vm is defined else 'DebianBusterTemplate
 pve_kvm_clone_storage: "{{ clone_storage if clone_storage is defined else 'local-lvm' }}"          # Target storage for full clone.
 pve_kvm_clone_format: "{{ clone_format if clone_format is defined else 'raw' }}"                 # Target drive's backing file's data format. Used only with clone
 pve_kvm_clone_target: "{{ pve_kvm_node }}"        # Target node
-# clone_vmid: 1                   # VM source id
-# clone_newid: 9                  # Clone id
+# pve_kvm_clone_vmid: 1                   # VM source id
+# pve_kvm_clone_newid: 9                  # Clone id
                                   # Choices: cloop - cow - qcow - qcow2 (default) - qed - raw - vmdk
 
 
