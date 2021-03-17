@@ -3,14 +3,14 @@
 # Crear una KVM desde cero en el nodo Proxmox
 - name: Create a KVM from scratch in Proxmox node
   proxmox_kvm:
-    node: "{{ pve_kvm_node }}"
-    api_user: "{{ pve_kvm_api_user }}"
-    api_host: "{{ pve_kvm_api_host }}"
-    api_password: "{{ pve_kvm_api_password }}"
+    node: "{{ pve_node }}"
+    api_user: "{{ pve_api_user }}"
+    api_host: "{{ pve_api_host }}"
+    api_password: "{{ pve_api_password }}"
     description: "{{ pve_kvm_description | default (omit) }}"
     kvm: "{{ pve_kvm_kvm | default (omit) }}"
     ostype: "{{ pve_kvm_ostype | default (omit) }}"
-    name: "{{ pve_kvm_hostname }}"
+    name: "{{ pve_hostname }}"
     sockets: "{{ pve_kvm_sockets | default (omit) }}"
     cores: "{{ pve_kvm_cores | default (omit) }}"
     cpuunits: "{{ pve_kvm_cpuunits | default (omit) }}"
@@ -30,6 +30,6 @@
           {%- endfor -%}  }
 
   register: pve_kvm_virtualm
-  delegate_to: "{{ pve_kvm_api_host }}"
+  delegate_to: "{{ pve_api_host }}"
 
 ...

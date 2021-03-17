@@ -41,11 +41,14 @@ To give time to update your whole inventory, the role preserves backward compati
 
 
 ```yaml
-pve_kvm_node: my_node
-pve_kvm_api_host: my_node.my_cluster.org
-pve_kvm_api_user: deploy@pam
-pve_kvm_api_password: "pass1234" ## Better put passwords in a vault, ex. [group_vars | host_vars]/{{ inventory_hostname }}/vault/main.yml
-pve_kvm_node_deploy_password: D3pl0y_pwd
+pve_hostname: "{{ inventory_hostname.split('.')[0] }}"
+# By default, we suppose that `inventory_hostname` is the FQDN or the hostname of the host to create, so we set the variable to the hostname. 
+# You can arbitrarly define this hostname
+
+pve_node: my_node
+pve_api_host: my_node.my_cluster.org
+pve_api_user: deploy@pam
+pve_api_password: "pass1234" ## Better put passwords in a vault, ex. [group_vars | host_vars]/{{ inventory_hostname }}/vault/main.yml
 
 pve_kvm_start_after_create: false # Turn on the VM once created. Whether created from scratch or cloned
 pve_kvm_timeout: 500 # Timeout (in seconds) for operations, both clone and create
@@ -57,7 +60,7 @@ pve_kvm_clone_vm: DebianBusterTemplate    # The VM to clone
 pve_kvm_clone_storage: local-lvm          # Target storage for full clone.
 pve_kvm_clone_format: raw                 # Target drive's backing file's data format. Used only with clone
                                           # Choices: cloop - cow - qcow - qcow2 (default) - qed - raw - vmdk
-pve_kvm_clone_target: "{{ pve_kvm_node }}"        # Target node
+pve_kvm_clone_target: "{{ pve_node }}"        # Target node
 # pve_kvm_clone_vmid: 1                   # VM source id
 # pve_kvm_clone_newid: 9                  # Clone id
                                   # Choices: cloop - cow - qcow - qcow2 (default) - qed - raw - vmdk

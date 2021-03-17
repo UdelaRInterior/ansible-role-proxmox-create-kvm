@@ -3,13 +3,12 @@
 # typical variables to define for a virtual machine (in host_vars/inventory_hostname, for ex.)
 
 # Proxmox hostname of the kvm to be created. By default, inventory_hostname is the FQDN or hostname, we set the hostname.
-pve_kvm_hostname: "{{ inventory_hostname.split('.')[0] }}"
+pve_hostname: "{{ inventory_hostname.split('.')[0] }}"
 
-pve_kvm_node: "{{ node if node is defined else 'my_node' }}"
-pve_kvm_api_host: "{{ api_host if api_host is defined else 'my_node.my_cluster.org' }}"
-pve_kvm_api_user: "{{ api_user if api_user is defined else 'deploy@pam' }}"
-pve_kvm_api_password: "{{ api_password if api_password is defined else 'pass1234' }}" ## Better put passwords in a vault, ex. [group_vars | host_vars]/{{ inventory_hostname }}/vault/main.yml
-pve_kvm_node_deploy_password: "{{ node_deploy_password if node_deploy_password is defined else 'D3pl0y_pwd' }}"
+pve_node: "{{ node if node is defined else 'my_node' }}"
+pve_api_host: "{{ api_host if api_host is defined else 'my_node.my_cluster.org' }}"
+pve_api_user: "{{ api_user if api_user is defined else 'deploy@pam' }}"
+pve_api_password: "{{ api_password if api_password is defined else 'pass1234' }}" ## Better put passwords in a vault, ex. [group_vars | host_vars]/{{ inventory_hostname }}/vault/main.yml
 
 pve_kvm_start_after_create: "{{ start_after_create if start_after_create is defined else 'false' }}" # Turn on the VM once created. Whether created from scratch or cloned
 pve_kvm_timeout: "{{ pve_timeout if pve_timeout is defined else '500' }}" # Timeout (in seconds) for operations, both clone and create
@@ -20,7 +19,7 @@ pve_kvm_full_clone: "{{ full_clone if full_clone is defined else 'true' }}"     
 pve_kvm_clone_vm: "{{ clone_vm if clone_vm is defined else 'DebianBusterTemplate' }}"    # The VM to clone
 pve_kvm_clone_storage: "{{ clone_storage if clone_storage is defined else 'local-lvm' }}"          # Target storage for full clone.
 pve_kvm_clone_format: "{{ clone_format if clone_format is defined else 'raw' }}"                 # Target drive's backing file's data format. Used only with clone
-pve_kvm_clone_target: "{{ pve_kvm_node }}"        # Target node
+pve_kvm_clone_target: "{{ pve_node }}"        # Target node
 # pve_kvm_clone_vmid: 1                   # VM source id
 # pve_kvm_clone_newid: 9                  # Clone id
                                   # Choices: cloop - cow - qcow - qcow2 (default) - qed - raw - vmdk
