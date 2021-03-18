@@ -5,13 +5,13 @@
   apt:
     name: python-pip
     state: present
-  delegate_to: "{{ api_host }}"
+  delegate_to: "{{ pve_api_host }}"
 
 #  Verificar si el módulo proxmoxer de python está instalado
 - name: Verify if proxmoxer pip module is installed
   pip:
     name: proxmoxer
     state: present
-  delegate_to: "{{ api_host }}"
+  delegate_to: "{{ pve_api_host }}"
 
 ...
