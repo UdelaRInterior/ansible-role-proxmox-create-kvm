@@ -1,5 +1,9 @@
 # Change Log
 
+## [v3.0.0](https://github.com/UdelaRInterior/ansible-role-proxmox-create-kvm/tree/v3.0.0)
+
+* End of v1.0.0 variables' API backward's compatibility, no longer needed and not considered clean code
+
 ## [v2.0.0](https://github.com/UdelaRInterior/ansible-role-proxmox-create-kvm/tree/v2.0.0)
 
 * New role's variables interface, with a uniform namespace pve_kvm_*

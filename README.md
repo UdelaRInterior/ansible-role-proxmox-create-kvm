@@ -35,10 +35,7 @@ Role Variables
 
 The `defaults` variables define the VM parameters. To be specified by host under `host_vars/host_fqdn/vars` and eventually encrypted in `host_vars/host_fqdn/vault`
 
-New interface in v2.0.0, with all role variables defined in the `pve_kvm_*` namespace. Update your host variables in your ansible code!
-
-To give time to update your whole inventory, the role preserves backward compatibility with [previous interface](https://github.com/UdelaRInterior/ansible-role-proxmox-create-kvm/blob/v1.2.0/README.md#role-variables) up to v3.X.Y release. 
-
+New interface introduced in v2.0.0 is maintained, with role's variables defined in the `pve_*` namespace when they are shared between several Proxmox roles, and in the `pve_kvm_*` namespace when they are specific to th present one. The role is no longer backward's compatible with [v1.X.Y previous interface](https://github.com/UdelaRInterior/ansible-role-proxmox-create-kvm/blob/v1.2.0/README.md#role-variables). 
 
 ```yaml
 pve_hostname: "{{ inventory_hostname.split('.')[0] }}"
@@ -80,37 +77,37 @@ pve_kvm_vga: std      # Select VGA type. If you want to use high resolution mode
               # Choices: std (default) - cirrus - vmware - qxl - serial0 - serial1 - serial2 - serial3 - qxl2 - qxl3 - qxl4
 
 pve_kvm_hard_disks:
-  - id: 0                         #  0 ≤ n ≤ 15
-    bus: virtio                   # Optional. Available buses: virtio (default) - ide - sata - scsi
-    storage: local-lvm
-    size: 32
-    format: raw                   # Optional. Available formats: qcow2 - raw (default) - subvol
-    backup: true                  # Optional
-    skip_replication: false       # Optional
-    cache: none                   # Optional. Available types: none (default) - directsync - writethrough - writeback - unsafe
-    io_thread: false              # Optional
-    ssd_emulation: false          # Optional
+- id: 0                         #  0 ≤ n ≤ 15
+  bus: virtio                   # Optional. Available buses: virtio (default) - ide - sata - scsi
+  storage: local-lvm
+  size: 32
+  format: raw                   # Optional. Available formats: qcow2 - raw (default) - subvol
+  backup: true                  # Optional
+  skip_replication: false       # Optional
+  cache: none                   # Optional. Available types: none (default) - directsync - writethrough - writeback - unsafe
+  io_thread: false              # Optional
+  ssd_emulation: false          # Optional
 
-  - id: 1
-    bus: sata
-    storage: local-lvm
-    size: 16
-    ssd_emulation: true
-    backup: false
+- id: 1
+  bus: sata
+  storage: local-lvm
+  size: 16
+  ssd_emulation: true
+  backup: false
 
 pve_kvm_net_interfaces:
-  - id: net0
-    model: virtio                 # Optional. Available models: virtio - e1000 - rtl8139 - vmxnet3
-    hwaddr: 46:70:B7:26:87:4F     # Optional. If not indicated, Proxmox will assign one automatically.
-    bridge: vmbr0
-    firewall: true                # Optional
-    disconnect: true              # Optional
-    multiqueue: 2                 # Optional
-    rate_limit: 250               # Optional (In MB/s)
-    vlan_tag: 400                 # Optional
+- id: net0
+  model: virtio                 # Optional. Available models: virtio - e1000 - rtl8139 - vmxnet3
+  hwaddr: 46:70:B7:26:87:4F     # Optional. If not indicated, Proxmox will assign one automatically.
+  bridge: vmbr0
+  firewall: true                # Optional
+  disconnect: true              # Optional
+  multiqueue: 2                 # Optional
+  rate_limit: 250               # Optional (In MB/s)
+  vlan_tag: 400                 # Optional
 
-  - id: net1
-    bridge: vmbr0
+- id: net1
+  bridge: vmbr0
 ```
 
 Dependencies
