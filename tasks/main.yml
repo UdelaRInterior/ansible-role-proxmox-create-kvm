@@ -9,8 +9,8 @@
 - include_tasks: clone_kvm.yml
   when: pve_kvm_clone_from_existing | bool
 
-# Extraer el número de VM
-- name: Extract the ID of the VM
+# Extraer el ID de la máquina virtual
+- name: Extract the virtual machine ID
   ansible.builtin.shell: |
     set -o pipefail
     qm list | grep -w "{{ pve_hostname }}" | awk '{ print $1 }'
@@ -29,8 +29,8 @@
   ansible.builtin.set_fact:
     pve_kvm_inferred_vmid: "{{ pve_kvm_clone_newid if(pve_kvm_clone_newid is defined and pve_kvm_clone_from_existing) else ( pve_kvm_vmid if (pve_kvm_vmid is defined) else pve_kvm_extracted_vmid.stdout ) }}"
 
-# Encender la VM
-- name: Turn on the VM
+# Asegurarse de que la máquina virtual esté encendida
+- name: Ensure the virtual machine is turned on
   community.general.proxmox_kvm:
     node: "{{ pve_node }}"
     api_host: "{{ pve_api_host }}"
@@ -41,6 +41,6 @@
     vmid: "{{ pve_kvm_inferred_vmid }}"
     state: started
   delegate_to: "{{ pve_api_host }}"
-  when: pve_kvm_start_after_create | bool
+  when: pve_kvm_started_after_provision | bool
 
 ...

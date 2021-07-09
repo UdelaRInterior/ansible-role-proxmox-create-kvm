@@ -85,7 +85,7 @@ pve_kvm_timeout: 500
 # so we set the variable to the hostname. You can arbitrarly define this hostname
 pve_hostname: "{{ inventory_hostname.split('.')[0] }}"
 
-pve_kvm_start_after_create: false # Turn on the VM once created. Whether created from scratch or cloned
+pve_kvm_started_after_provision: false # Turn on the VM once created. Whether created from scratch or cloned
 
 # FALSE: create a new VM  -  TRUE: clone an existing VM
 pve_kvm_clone_from_existing: false
@@ -131,7 +131,7 @@ pve_kvm_clone_target: "{{ pve_node }}"
 
 
 #####################################################
-#### To create a KVM by cloning a pre-existing one
+#### To create a KVM from scratch
 ###
 
 ###
