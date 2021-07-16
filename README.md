@@ -48,13 +48,15 @@ New interface introduced in v2.0.0 is maintained, with role's variables defined 
 ### Proxmox API connection and authentication section ###
 #########################################################
 
-# Various module options used to have default values. This cause problems when user expects different behavior from proxmox by default or fill
-# options which cause problems when they have been set. The default value is compatibility, which will ensure that the default values are used
-# when the values are not explicitly specified by the user. From community.general 4.0.0 on, the default value will switch to no_defaults.
-# To avoid deprecation warnings, please set proxmox_default_behavior to an explicit value. This affects the acpi, autostart, balloon, boot,
-# cores, cpu, cpuunits, force, format, kvm, memory, onboot, ostype, sockets, tablet, template, vga, options.
-# See: https://docs.ansible.com/ansible/latest/collections/community/general/proxmox_kvm_module.html#parameter-proxmox_default_behavior
-pve_lxc_proxmox_default_behavior: compatibility
+# Flag to determine the behavior of the variables default values
+  # Various module options used to have default values. This cause problems when user expects different behavior from proxmox by default or fill
+  # options which cause problems when they have been set. The default value is "compatibility", which will ensure that the default values are used
+  # when the values are not explicitly specified by the user. From community.general 4.0.0 on, the default value will switch to "no_defaults".
+  # To avoid deprecation warnings, please set proxmox_default_behavior to an explicit value. This affects the acpi, autostart, balloon, boot,
+  # cores, cpu, cpuunits, force, format, kvm, memory, onboot, ostype, sockets, tablet, template, vga, options.
+  # See: https://docs.ansible.com/ansible/latest/collections/community/general/proxmox_kvm_module.html#parameter-proxmox_default_behavior
+  # Choices: compatibility - no_defaults
+pve_default_behavior: compatibility
 
 # Proxmox node hostname where we create or manage a KVM
 pve_node: mynode
@@ -71,7 +73,7 @@ pve_api_password: PaSsWd_f0r-AuToMaTi0nS    # Optional if token authentication i
 # pve_api_token_secret: 0b029a23-1ca3-a93f-8d90-5a4c9d064199      # Optional if user-password based authentication is used
 
 # Validate the node's certificates when creating the virtual machine
-pve_lxc_validate_certs: no    # Optional.
+pve_validate_certs: no    # Optional.
 
 # Timeout (in seconds) for operations, both clone and create. (Cloning can take a while)
 pve_kvm_timeout: 500
@@ -85,7 +87,7 @@ pve_kvm_timeout: 500
 # so we set the variable to the hostname. You can arbitrarly define this hostname
 pve_hostname: "{{ inventory_hostname.split('.')[0] }}"
 
-pve_kvm_started_after_provision: false # Turn on the VM once created. Whether created from scratch or cloned
+pve_kvm_started_after_provision: false # It will ensure that the VM is turned on when provisioning finishes
 
 # FALSE: create a new VM  -  TRUE: clone an existing VM
 pve_kvm_clone_from_existing: false
@@ -107,7 +109,14 @@ pve_kvm_update: no
 # FALSE: linked clone  -  TRUE: full clone ## See https://github.com/UdelaRInterior/ansible-role-proxmox-create-kvm/issues/2
 pve_kvm_clone_full: true
 
-# Name of VM to be cloned. If vmid is setted, pve_kvm_clone_vm can take arbitrary value but required for initiating the clone.
+# ID of VM to be cloned
+# pve_kvm_clone_vmid: 100
+
+# VMID for the clone. If newid is not set, the next available VMID will be fetched from ProxmoxAPI.
+# pve_kvm_clone_newid: 400
+
+# Name of VM to be cloned. If vmid is set with the pve_kvm_clone_vmid variable hereafter, which takes precedence over
+# the hostname, pve_kvm_clone_vm can take arbitrary value but it is required for initiating the clone.
 pve_kvm_clone_vm: DebianBusterTemplate
 
 # The name of the snapshot to clone (Don't use/define it at the same time as pve_kvm_clone_vm)
@@ -123,12 +132,6 @@ pve_kvm_clone_format: raw
 # Target node. Only allowed if the original VM is on shared storage.
 pve_kvm_clone_target: "{{ pve_node }}"
 
-# ID of VM to be cloned
-# pve_kvm_clone_vmid: 100
-
-# VMID for the clone. If newid is not set, the next available VMID will be fetched from ProxmoxAPI.
-# pve_kvm_clone_newid: 400
-
 
 #####################################################
 #### To create a KVM from scratch
@@ -139,7 +142,7 @@ pve_kvm_clone_target: "{{ pve_node }}"
 ###
 
 # Specifies whether a VM will be started during system bootup.
-pve_kvm_onboot: no    # Optional
+pve_onboot: no    # Optional
 
 # Specify the description for the VM. Only used on the configuration web interface. This is saved as comment inside the configuration file.
 pve_kvm_description: LAMP Server created with Ansible    # Optional
